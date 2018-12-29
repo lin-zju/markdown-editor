@@ -1,6 +1,7 @@
 package lib;
 
 import javax.swing.*;
+import javax.swing.event.DocumentListener;
 
 public class EditorView extends JTextArea {
     private Model model;

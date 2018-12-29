@@ -14,10 +14,10 @@ public class DocChange implements Serializable {
         this.change = change;
     }
 
-    public DocChange(int start, int end) {
+    public DocChange(int start, int length) {
         this.type = REMOVE;
         this.start = start;
-        this.end = end;
+        this.length = length;
     }
 
     public String getChange() {
@@ -28,8 +28,8 @@ public class DocChange implements Serializable {
         return start;
     }
 
-    public int getEnd() {
-        return end;
+    public int getLength() {
+        return length;
     }
 
     public int getType() {
@@ -38,6 +38,6 @@ public class DocChange implements Serializable {
 
     private String change;
     private int start;
-    private int end;
+    private int length;
     private int type;
 }

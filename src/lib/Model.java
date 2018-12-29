@@ -1,8 +1,8 @@
 package lib;
 
+import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
-import javax.swing.text.PlainDocument;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -13,6 +13,11 @@ public class Model {
     private String title = "untitled.md";
     private boolean modified = false;
     private ArrayList<ActionListener> actionListenerList = new ArrayList<>();
+    private DocumentListener documentListener;
+
+    public void setDocumentListener(DocumentListener documentListener) {
+        this.documentListener = documentListener;
+    }
 
     public void initDoc(Document doc) {
         this.doc = doc;
@@ -42,10 +47,13 @@ public class Model {
 
     public void setDoc(Document doc) {
         try {
+            this.doc.removeDocumentListener(documentListener);
             this.doc.remove(0, this.doc.getLength());
             this.doc.insertString(0, doc.getText(0, doc.getLength()), null);
         } catch (BadLocationException e) {
             e.printStackTrace();
+        } finally {
+            this.doc.addDocumentListener(documentListener);
         }
 
         triggerEvent();
@@ -53,16 +61,21 @@ public class Model {
 
     public void changeDoc(DocChange c) {
         try {
+            // must disable change event to be fired
+            doc.removeDocumentListener(documentListener);
             if (c.getType() == DocChange.INSERT) {
                 doc.insertString(c.getStart(), c.getChange(), null);
             } else if (c.getType() == DocChange.REMOVE) {
-                doc.remove(c.getStart(), c.getEnd());
+                doc.remove(c.getStart(), c.getLength());
             }
             triggerEvent();
         } catch (BadLocationException e) {
             e.printStackTrace();
+        } finally {
+            doc.addDocumentListener(documentListener);
         }
     }
+
 
     public synchronized void addActionListener(ActionListener l) {
         actionListenerList.add(l);

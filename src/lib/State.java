@@ -14,6 +14,7 @@ import java.net.UnknownHostException;
 
 public class State {
 
+    protected boolean connected = false;
     protected Model model;
     protected File file = null;
 
@@ -39,7 +40,7 @@ public class State {
                 "open a file will cause change loss and connection loss, " +
                 "are you sure to proceed?";
         boolean confirm = true;
-        if (file != null && (model.isModified())) {
+        if (model.isModified() || connected) {
             confirm = getConfirmation(title, prompt);
         }
         if (confirm) {
@@ -55,7 +56,7 @@ public class State {
                 "create a new file will cause change loss and connection loss, " +
                         "are you sure to proceed?";
         boolean confirm = true;
-        if (file != null && (model.isModified())) {
+        if (model.isModified() || connected) {
             confirm = getConfirmation(title, prompt);
         }
         if (confirm) {
@@ -147,7 +148,7 @@ public class State {
                 }
                 input.close();
                 this.file = selectedFile;
-                // set model documentation
+                // set model document
                 model.setDoc(doc);
                 model.setTitle(file.getName());
                 model.setModified(false);
@@ -180,7 +181,6 @@ public class State {
 
 class Share extends State {
     protected Socket s;
-    protected boolean connected = false;
     protected ObjectInputStream in = null;
     protected ObjectOutputStream out = null;
     int serverPort = 8000;
@@ -216,7 +216,6 @@ class Share extends State {
                 try {
                     System.out.println("Wait to receive");
                     Object o = in.readObject();
-                    System.out.println("Received " + o.getClass());
                     if (o instanceof DocChange) {
                         model.changeDoc((DocChange) o);
                     }
@@ -238,10 +237,12 @@ class Share extends State {
 class Local extends State {
     public Local(Model model) {
         super(model);
+        connected = false;
     }
 
     public Local(State s) {
         super(s);
+        connected = false;
     }
 }
 

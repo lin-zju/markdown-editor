@@ -1,6 +1,7 @@
 package lib;
 
 import javax.swing.*;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 
 public class Window extends JFrame {
@@ -67,7 +68,10 @@ public class Window extends JFrame {
 
     public void setEditorView(EditorView eview) {
         this.add(eview, BorderLayout.CENTER);
-        eview.getDocument().addDocumentListener(controller.new EditFileListener());
+        DocumentListener dl = controller.new EditFileListener();
+        eview.getDocument().addDocumentListener(dl);
+        model.initDoc(eview.getDocument());
+        model.setDocumentListener(dl);
     }
 
     public void setController(Controller c) {
@@ -80,7 +84,6 @@ public class Window extends JFrame {
     public static void main(String[] args) {
         Model model = new Model();
         EditorView eview = new EditorView(model);
-        model.initDoc(eview.getDocument());
         Controller c = new Controller(model);
         Window window = new Window(model, eview, null, c);
     }
