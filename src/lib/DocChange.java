@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class DocChange implements Serializable {
     public static final int INSERT = 0;
+    public static final long serialVersionUID = 233L;
 
 
     public static final int REMOVE = 1;

@@ -44,7 +44,6 @@ public class Controller {
 
         @Override
         public void insertUpdate(DocumentEvent e) {
-            System.out.println("insert triggered");
             Document doc = e.getDocument();
             try {
                 DocChange dc = new DocChange(e.getOffset(), doc.getText(e.getOffset(), e.getLength()));
@@ -56,7 +55,6 @@ public class Controller {
 
         @Override
         public void removeUpdate(DocumentEvent e) {
-            System.out.println("delete triggered");
             Document doc = e.getDocument();
             DocChange dc = new DocChange(e.getOffset(), e.getLength());
             state = state.edit(dc);
@@ -89,6 +87,13 @@ public class Controller {
         @Override
         public void actionPerformed(ActionEvent e) {
             state = state.clientMode();
+        }
+    }
+
+    public class ExportFileListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            state = state.export();
         }
     }
 }
