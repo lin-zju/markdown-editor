@@ -2,4 +2,7 @@ out
 .idea
 *.iml
 *.class
+notes.md
+.gitignore
+
 
