@@ -42,7 +42,7 @@ public class State {
                 "open a file will cause change loss and connection loss, " +
                 "are you sure to proceed?";
         boolean confirm = true;
-        if (model.isModified() || connected) {
+        if (model.isModified() || this instanceof Server || this instanceof Client) {
             confirm = getConfirmation(title, prompt);
         }
         if (confirm) {
@@ -58,7 +58,7 @@ public class State {
                 "create a new file will cause change loss and connection loss, " +
                         "are you sure to proceed?";
         boolean confirm = true;
-        if (model.isModified() || connected) {
+        if (model.isModified() || this instanceof Server || this instanceof Client) {
             confirm = getConfirmation(title, prompt);
         }
         if (confirm) {
