@@ -9,9 +9,16 @@ import java.util.ArrayList;
 
 public class Model {
 
+    public final static int SERVER = 0;
+    public final static int LOCAL = 1;
+    public final static int CLIENT = 2;
+
     private Document doc;
     private String title = "untitled.md";
     private boolean modified = false;
+    private int mode = LOCAL;
+    private boolean connected = false;
+    private int clientNum = 0;
     private ArrayList<ActionListener> actionListenerList = new ArrayList<>();
     private DocumentListener documentListener;
 
@@ -41,15 +48,20 @@ public class Model {
         triggerEvent();
     }
 
-    public Document getDoc() {
-        return doc;
+    public MyDoc getDoc() {
+        try {
+            return new MyDoc(doc.getText(0, doc.getLength()));
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    public void setDoc(Document doc) {
+    public void setDoc(MyDoc doc) {
         try {
             this.doc.removeDocumentListener(documentListener);
             this.doc.remove(0, this.doc.getLength());
-            this.doc.insertString(0, doc.getText(0, doc.getLength()), null);
+            this.doc.insertString(0, doc.getText(), null);
         } catch (BadLocationException e) {
             e.printStackTrace();
         } finally {
@@ -57,6 +69,35 @@ public class Model {
         }
 
         triggerEvent();
+    }
+
+    public void setMode(int mode) {
+        this.mode = mode;
+        triggerEvent();
+    }
+
+    public void setConnected(boolean connected) {
+        this.connected = connected;
+        triggerEvent();
+    }
+
+    public void setClientNum(int clientNum) {
+        this.clientNum = clientNum;
+        triggerEvent();
+    }
+
+
+
+    public String getStatusText() {
+        if (mode == LOCAL) {
+            return "Local Mode";
+        }
+        else if (mode == SERVER) {
+            return "Server Mode, " + clientNum + " connections.";
+        }
+        else
+            return "Client Mode, " + (connected ? "" : "not ") + "connected";
+
     }
 
     public void changeDoc(DocChange c) {

@@ -1,16 +1,17 @@
 package lib;
 
 import javax.swing.*;
-import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 
-public class EditorView extends JTextArea {
+public class RenderView extends JEditorPane {
     private Model model;
 
-    public EditorView(Model model) {
+    public RenderView(Model model) {
         setFont(new Font("Monospaced", Font.PLAIN, 16));
+        setContentType( "text/html" );
         setModel(model);
-        setLineWrap(true);
+        setEditable(false);
     }
 
 
@@ -18,6 +19,9 @@ public class EditorView extends JTextArea {
         this.model = model;
         model.addActionListener(
                 e -> {
+                    String text = null;
+                    text = model.getDoc().getText();
+                    this.setText(HtmlRender.getHtml(text));
                     this.repaint();
                 });
     }
